@@ -1,10 +1,7 @@
 package com.pham.freshguard.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,6 +12,8 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "items")
+@EqualsAndHashCode(exclude = "recipes")
+@ToString(exclude = "recipes")
 public class ItemEntity {
 
     @Id
@@ -26,11 +25,8 @@ public class ItemEntity {
     private LocalDate expirationDate;
     private LocalDate purchaseDate;
     private Integer quantity;
-    private String unit; // "pieces", "cups", "lbs"
     private String location; // "Fridge", "Pantry"
-    private String notes;
 
     @ManyToMany(mappedBy = "ingredients")
     private Set<RecipeEntity> recipes;
-
 }

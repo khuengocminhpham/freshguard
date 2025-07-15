@@ -1,10 +1,7 @@
 package com.pham.freshguard.domain.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -15,6 +12,8 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "recipes")
+@EqualsAndHashCode(exclude = "items")
+@ToString(exclude = "items")
 public class RecipeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "recipe_id_seq")
