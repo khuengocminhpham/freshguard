@@ -17,8 +17,8 @@ public class TestDataUtil {
         return ItemEntity.builder()
                 .name("Salt")
                 .category("Spices")
-                .expirationDate(LocalDate.now().plusMonths(6)) // example expiration
-                .purchaseDate(LocalDate.now())
+                .expirationDate(LocalDate.of(2025, 7, 16).plusMonths(6)) // example expiration
+                .purchaseDate(LocalDate.of(2025, 7, 16))
                 .quantity(1)
                 .location("Pantry")
                 .build();
