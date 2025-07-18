@@ -42,6 +42,27 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public boolean isExists(Long id) {
+        return itemRepository.existsById(id);
+    }
+
+    @Override
+    public ItemEntity partialUpdate(Long id, ItemEntity itemEntity) {
+        itemEntity.setId(id);
+
+        return itemRepository.findById(id).map(item -> {
+            Optional.ofNullable(itemEntity.getName()).ifPresent(item::setName);
+            Optional.ofNullable(itemEntity.getCategory()).ifPresent(item::setCategory);
+            Optional.ofNullable(itemEntity.getExpirationDate()).ifPresent(item::setExpirationDate);
+            Optional.ofNullable(itemEntity.getPurchaseDate()).ifPresent(item::setPurchaseDate);
+            Optional.ofNullable(itemEntity.getQuantity()).ifPresent(item::setQuantity);
+            Optional.ofNullable(itemEntity.getLocation()).ifPresent(item::setLocation);
+            Optional.ofNullable(itemEntity.getRecipes()).ifPresent(item::setRecipes);
+            return itemRepository.save(item);
+        }).orElseThrow(() -> new RuntimeException("Item does not exist"));
+    }
+
+    @Override
     public void deleteAll() {
         itemRepository.deleteAll();
     }

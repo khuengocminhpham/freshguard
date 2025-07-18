@@ -45,9 +45,43 @@ public class ItemController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @PutMapping(path = "/items/{id}")
+    public ResponseEntity<ItemDto> fullUpdateItem(
+            @PathVariable("id") Long id,
+            @RequestBody ItemDto itemDto) {
+
+        if(!itemService.isExists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        itemDto.setId(id);
+        ItemEntity itemEntity = itemMapper.mapFrom(itemDto);
+        ItemEntity savedItem = itemService.save(itemEntity);
+        return new ResponseEntity<>(
+                itemMapper.mapTo(savedItem),
+                HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "/items/{id}")
+    public ResponseEntity<ItemDto> partialUpdateItem(
+            @PathVariable("id") Long id,
+            @RequestBody ItemDto itemDto
+    ) {
+        if(!itemService.isExists(id)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        ItemEntity itemEntity = itemMapper.mapFrom(itemDto);
+        ItemEntity updatedItem = itemService.partialUpdate(id, itemEntity);
+        return new ResponseEntity<>(
+                itemMapper.mapTo(updatedItem),
+                HttpStatus.OK);
+    }
+
+
     @DeleteMapping(path = "/items/{id}")
     public ResponseEntity deleteItem(@PathVariable("id") Long id) {
         itemService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
