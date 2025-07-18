@@ -29,8 +29,8 @@ public class TestDataUtil {
         return ItemEntity.builder()
                 .name("Pork")
                 .category("Meat")
-                .expirationDate(LocalDate.now().plusDays(6)) // example expiration
-                .purchaseDate(LocalDate.now())
+                .expirationDate(LocalDate.of(2025, 7, 16).plusDays(6)) // example expiration
+                .purchaseDate(LocalDate.of(2025, 7, 16))
                 .quantity(2)
                 .location("Pantry")
                 .build();
