@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pham.freshguard.TestDataUtil;
 import com.pham.freshguard.domain.entities.ItemEntity;
+import com.pham.freshguard.domain.entities.RecipeEntity;
 import com.pham.freshguard.services.ItemService;
 import com.pham.freshguard.services.RecipeService;
 import jakarta.transaction.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -283,5 +285,44 @@ public class ItemControllerIntegrationTests {
                 MockMvcRequestBuilders.delete("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+
+    @Test
+    public void testThatGetItemRecipesReturnsHttpStatus200ForExistingItem() throws Exception {
+        ItemEntity item = TestDataUtil.createTestItemEntityA();
+        ItemEntity savedItem = itemService.save(item);
+        RecipeEntity recipe = TestDataUtil.createTestRecipeEntityA();
+        RecipeEntity savedRecipe = recipeService.save(recipe);
+        recipeService.addIngredientToRecipe(savedRecipe.getId(), savedItem.getId());
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/items/" + savedItem.getId() + "/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void testThatGetItemRecipesReturnsCorrectRecipe() throws Exception {
+        ItemEntity item = TestDataUtil.createTestItemEntityA();
+        ItemEntity savedItem = itemService.save(item);
+        RecipeEntity recipe = TestDataUtil.createTestRecipeEntityA();
+        RecipeEntity savedRecipe = recipeService.save(recipe);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/items/" + savedItem.getId() + "/recipes")
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].id").value(savedRecipe.getId())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].name").value(savedRecipe.getName())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].description").value(savedRecipe.getDescription())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].instructions").value(savedRecipe.getInstructions())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].servings").value(savedRecipe.getServings())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$[0].prepTimeMinutes").value(savedRecipe.getPrepTimeMinutes())
+        );
     }
 }
