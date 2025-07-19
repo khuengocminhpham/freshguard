@@ -24,5 +24,4 @@ public class ItemDto {
     private String unit; // "pieces", "cups", "lbs"
     private String location; // "Fridge", "Pantry"
     private String notes;
-    private Set<RecipeDto> recipes;
 }

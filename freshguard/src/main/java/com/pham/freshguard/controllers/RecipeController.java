@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api/recipes")
 public class RecipeController {
     private RecipeService recipeService;
     private Mapper<RecipeEntity, RecipeDto> recipeMapper;
@@ -22,14 +23,14 @@ public class RecipeController {
         this.recipeMapper = recipeMapper;
     }
 
-    @PostMapping(path = "/recipes")
+    @PostMapping()
     public ResponseEntity<RecipeDto> createRecipe (@RequestBody RecipeDto recipe) {
         RecipeEntity recipeEntity = recipeMapper.mapFrom(recipe);
         RecipeEntity savedRecipeEntity=  recipeService.save(recipeEntity);
         return new ResponseEntity<>(recipeMapper.mapTo(savedRecipeEntity), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/recipes")
+    @GetMapping()
     public List<RecipeDto> getRecipes() {
         List<RecipeEntity> recipes = recipeService.findAll();
         return recipes.stream()
@@ -37,7 +38,7 @@ public class RecipeController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/recipes/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<RecipeDto> getRecipe(@PathVariable("id") Long id) {
         Optional<RecipeEntity> recipe = recipeService.findOne(id);
         return recipe.map(recipeEntity -> {
@@ -46,7 +47,7 @@ public class RecipeController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping(path = "/recipes/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<RecipeDto> fullUpdateRecipe(
             @PathVariable("id") Long id,
             @RequestBody RecipeDto recipeDto) {
@@ -63,7 +64,7 @@ public class RecipeController {
                 HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/recipes/{id}")
+    @PatchMapping(path = "/{id}")
     public ResponseEntity<RecipeDto> partialUpdateRecipe(
             @PathVariable("id") Long id,
             @RequestBody RecipeDto recipeDto
@@ -80,9 +81,55 @@ public class RecipeController {
     }
 
 
-    @DeleteMapping(path = "/recipes/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity deleteRecipe(@PathVariable("id") Long id) {
         recipeService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{recipeId}/ingredients/{itemId}")
+    public ResponseEntity<RecipeDto> addIngredientToRecipe(
+            @PathVariable Long recipeId,
+            @PathVariable Long itemId) {
+        try {
+            RecipeEntity recipeEntity = recipeService.addIngredientToRecipe(recipeId, itemId);
+            return new ResponseEntity<>(recipeMapper.mapTo(recipeEntity), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{recipeId}/ingredients/{itemId}")
+    public ResponseEntity<RecipeDto> removeIngredientFromRecipe(
+            @PathVariable Long recipeId,
+            @PathVariable Long itemId) {
+        try {
+            RecipeEntity recipeEntity = recipeService.removeIngredientFromRecipe(recipeId, itemId);
+            return new ResponseEntity<>(recipeMapper.mapTo(recipeEntity), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{recipeId}/ingredients")
+    public ResponseEntity<RecipeDto> setRecipeIngredients(
+            @PathVariable Long recipeId,
+            @RequestBody List<Long> itemIds) {
+        try {
+            RecipeEntity recipeEntity = recipeService.setRecipeIngredients(recipeId, itemIds);
+            return new ResponseEntity<>(recipeMapper.mapTo(recipeEntity), HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/find-by-ingredients")
+    public ResponseEntity<List<RecipeDto>> findRecipesContainingAnyIngredients(
+            @RequestBody List<Long> itemIds) {
+        List<RecipeEntity> recipes = recipeService.findRecipesContainingIngredients(itemIds);
+        List<RecipeDto> recipesDto = recipes.stream()
+                .map(recipeMapper::mapTo)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(recipesDto, HttpStatus.OK);
     }
 }

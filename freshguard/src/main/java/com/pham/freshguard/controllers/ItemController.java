@@ -1,34 +1,41 @@
 package com.pham.freshguard.controllers;
 
 import com.pham.freshguard.domain.dto.ItemDto;
+import com.pham.freshguard.domain.dto.RecipeDto;
 import com.pham.freshguard.domain.entities.ItemEntity;
+import com.pham.freshguard.domain.entities.RecipeEntity;
 import com.pham.freshguard.mappers.Mapper;
 import com.pham.freshguard.services.ItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api/items")
 public class ItemController {
+
     private final ItemService itemService;
     private final Mapper<ItemEntity, ItemDto> itemMapper;
-    public ItemController(ItemService itemService, Mapper<ItemEntity, ItemDto> itemMapper) {
+    private final Mapper<RecipeEntity, RecipeDto> recipeMapper;
+    public ItemController(ItemService itemService, Mapper<ItemEntity, ItemDto> itemMapper, Mapper<RecipeEntity, RecipeDto> recipeMapper) {
         this.itemService = itemService;
         this.itemMapper = itemMapper;
+        this.recipeMapper = recipeMapper;
     }
 
-    @PostMapping(path = "/items")
+    @PostMapping()
     public ResponseEntity<ItemDto> createItem (@RequestBody ItemDto item) {
         ItemEntity itemEntity = itemMapper.mapFrom(item);
         ItemEntity savedItemEntity =  itemService.save(itemEntity);
         return new ResponseEntity<>(itemMapper.mapTo(savedItemEntity), HttpStatus.CREATED);
     }
 
-    @GetMapping(path = "/items")
+    @GetMapping()
     public List<ItemDto> getItems() {
         List<ItemEntity> items = itemService.findAll();
         return items.stream()
@@ -36,7 +43,7 @@ public class ItemController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(path = "/items/{id}")
+    @GetMapping(path = "/{id}")
     public ResponseEntity<ItemDto> getItem(@PathVariable("id") Long id) {
         Optional<ItemEntity> item = itemService.findOne(id);
         return item.map(itemEntity -> {
@@ -45,7 +52,7 @@ public class ItemController {
         }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PutMapping(path = "/items/{id}")
+    @PutMapping(path = "/{id}")
     public ResponseEntity<ItemDto> fullUpdateItem(
             @PathVariable("id") Long id,
             @RequestBody ItemDto itemDto) {
@@ -62,7 +69,7 @@ public class ItemController {
                 HttpStatus.OK);
     }
 
-    @PatchMapping(path = "/items/{id}")
+    @PatchMapping(path = "/{id}")
     public ResponseEntity<ItemDto> partialUpdateItem(
             @PathVariable("id") Long id,
             @RequestBody ItemDto itemDto
@@ -79,9 +86,22 @@ public class ItemController {
     }
 
 
-    @DeleteMapping(path = "/items/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity deleteItem(@PathVariable("id") Long id) {
         itemService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{id}/recipes")
+    public ResponseEntity<List<RecipeDto>> getItemRecipes(@PathVariable Long id) {
+        Optional<ItemEntity> item = itemService.findOne(id);
+        return item.map(itemEntity -> {
+            List<RecipeEntity> recipes = new ArrayList<>(itemEntity.getRecipes());
+            List<RecipeDto> recipesDto = recipes.stream()
+                    .map(recipeMapper::mapTo)
+                    .collect(Collectors.toList());
+            return  new ResponseEntity<>(recipesDto, HttpStatus.OK);
+        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
     }
 }
