@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.pham.freshguard.TestDataUtil;
 import com.pham.freshguard.domain.entities.ItemEntity;
 import com.pham.freshguard.services.ItemService;
+import com.pham.freshguard.services.RecipeService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,12 +28,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 public class ItemControllerIntegrationTests {
     private final ItemService itemService;
+    private final RecipeService recipeService;
     private final MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
     @Autowired
-    public ItemControllerIntegrationTests(MockMvc mockMvc, ItemService itemService) {
+    public ItemControllerIntegrationTests(MockMvc mockMvc, ItemService itemService, RecipeService recipeService) {
         this.itemService = itemService;
+        this.recipeService = recipeService;
         this.mockMvc = mockMvc;
         this.objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
@@ -42,6 +44,7 @@ public class ItemControllerIntegrationTests {
 
     @BeforeEach()
     void setUp() {
+        recipeService.deleteAll();
         itemService.deleteAll();
     }
 
@@ -51,7 +54,7 @@ public class ItemControllerIntegrationTests {
         String itemJson = objectMapper.writeValueAsString(itemEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/items")
+                MockMvcRequestBuilders.post("/api/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(itemJson)
         ).andExpect(
@@ -65,7 +68,7 @@ public class ItemControllerIntegrationTests {
         String itemJson = objectMapper.writeValueAsString(itemEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/items")
+                MockMvcRequestBuilders.post("/api/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(itemJson)
         ).andExpect(
@@ -88,7 +91,7 @@ public class ItemControllerIntegrationTests {
     @Test
     public void testThatGetItemsReturnsHttpStatus200() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/items")
+                MockMvcRequestBuilders.get("/api/items")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -99,7 +102,7 @@ public class ItemControllerIntegrationTests {
         itemService.save(itemEntityA);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/items")
+                MockMvcRequestBuilders.get("/api/items")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
@@ -124,7 +127,7 @@ public class ItemControllerIntegrationTests {
         ItemEntity savedItem = itemService.save(itemEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/items/" + savedItem.getId())
+                MockMvcRequestBuilders.get("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -135,7 +138,7 @@ public class ItemControllerIntegrationTests {
         ItemEntity savedItem = itemService.save(itemEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/items/" + savedItem.getId())
+                MockMvcRequestBuilders.get("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.id").value(savedItem.getId())
@@ -157,7 +160,7 @@ public class ItemControllerIntegrationTests {
     @Test
     public void testThatGetItemReturnsHttpStatus404WhenNoItemExists() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/items/9999")
+                MockMvcRequestBuilders.get("/api/items/9999")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -167,7 +170,7 @@ public class ItemControllerIntegrationTests {
         ItemEntity item = TestDataUtil.createTestItemEntityA();
         String itemJson = objectMapper.writeValueAsString(item);
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/items/9999")
+                MockMvcRequestBuilders.put("/api/items/9999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(itemJson)
         ).andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -181,7 +184,7 @@ public class ItemControllerIntegrationTests {
         String itemJson = objectMapper.writeValueAsString(item);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/items/" + savedItem.getId())
+                MockMvcRequestBuilders.put("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(itemJson)
         ).andExpect(MockMvcResultMatchers.status().isOk());
@@ -198,7 +201,7 @@ public class ItemControllerIntegrationTests {
         String itemUpdatedJson = objectMapper.writeValueAsString(itemEntityB);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/items/" + savedItem.getId())
+                MockMvcRequestBuilders.put("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(itemUpdatedJson)
         ).andExpect(
@@ -227,7 +230,7 @@ public class ItemControllerIntegrationTests {
         String itemJson = objectMapper.writeValueAsString(item);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.patch("/items/" + savedItem.getId())
+                MockMvcRequestBuilders.patch("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(itemJson)
         ).andExpect(MockMvcResultMatchers.status().isOk());
@@ -243,7 +246,7 @@ public class ItemControllerIntegrationTests {
         String itemJson = objectMapper.writeValueAsString(newItem);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.patch("/items/" + savedItem.getId())
+                MockMvcRequestBuilders.patch("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(itemJson)
         ).andExpect(
@@ -266,7 +269,7 @@ public class ItemControllerIntegrationTests {
     @Test
     public void testThatDeleteItemReturnsHttpStatus204ForNonExistingItem() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/items/9999")
+                MockMvcRequestBuilders.delete("/api/items/9999")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNoContent());
     }
@@ -277,7 +280,7 @@ public class ItemControllerIntegrationTests {
         ItemEntity savedItem = itemService.save(item);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/items/" + savedItem.getId())
+                MockMvcRequestBuilders.delete("/api/items/" + savedItem.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNoContent());
     }

@@ -20,8 +20,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.LocalDateTime;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @Transactional
@@ -52,7 +50,7 @@ public class RecipeControllerIntegrationTests {
         String recipeJson = objectMapper.writeValueAsString(recipeEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/recipes")
+                MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(recipeJson)
         ).andExpect(
@@ -66,7 +64,7 @@ public class RecipeControllerIntegrationTests {
         String recipeJson = objectMapper.writeValueAsString(recipeEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/recipes")
+                MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(recipeJson)
         ).andExpect(
@@ -87,7 +85,7 @@ public class RecipeControllerIntegrationTests {
     @Test
     public void testThatGetRecipesReturnsHttpStatus200() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/recipes")
+                MockMvcRequestBuilders.get("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -98,7 +96,7 @@ public class RecipeControllerIntegrationTests {
         recipeService.save(recipeEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/recipes")
+                MockMvcRequestBuilders.get("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$[0].id").isNumber()
@@ -121,7 +119,7 @@ public class RecipeControllerIntegrationTests {
         RecipeEntity savedRecipe = recipeService.save(recipeEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/recipes/" + savedRecipe.getId())
+                MockMvcRequestBuilders.get("/api/recipes/" + savedRecipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isOk());
     }
@@ -132,7 +130,7 @@ public class RecipeControllerIntegrationTests {
         RecipeEntity savedRecipe = recipeService.save(recipeEntity);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/recipes/" + savedRecipe.getId())
+                MockMvcRequestBuilders.get("/api/recipes/" + savedRecipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.id").value(savedRecipe.getId())
@@ -152,7 +150,7 @@ public class RecipeControllerIntegrationTests {
     @Test
     public void testThatGetRecipeReturnsHttpStatus404WhenNoRecipeExists() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/recipes/9999")
+                MockMvcRequestBuilders.get("/api/recipes/9999")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNotFound());
     }
@@ -162,7 +160,7 @@ public class RecipeControllerIntegrationTests {
         RecipeEntity recipe = TestDataUtil.createTestRecipeEntityA();
         String recipeJson = objectMapper.writeValueAsString(recipe);
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/recipes/9999")
+                MockMvcRequestBuilders.put("/api/recipes/9999")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(recipeJson)
         ).andExpect(MockMvcResultMatchers.status().isNotFound());
@@ -176,7 +174,7 @@ public class RecipeControllerIntegrationTests {
         String recipeJson = objectMapper.writeValueAsString(recipe);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/recipes/" + savedRecipe.getId())
+                MockMvcRequestBuilders.put("/api/recipes/" + savedRecipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(recipeJson)
         ).andExpect(MockMvcResultMatchers.status().isOk());
@@ -193,7 +191,7 @@ public class RecipeControllerIntegrationTests {
         String recipeUpdatedJson = objectMapper.writeValueAsString(recipeEntityB);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/recipes/" + savedRecipe.getId())
+                MockMvcRequestBuilders.put("/api/recipes/" + savedRecipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(recipeUpdatedJson)
         ).andExpect(
@@ -220,7 +218,7 @@ public class RecipeControllerIntegrationTests {
         String recipeJson = objectMapper.writeValueAsString(recipe);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.patch("/recipes/" + savedRecipe.getId())
+                MockMvcRequestBuilders.patch("/api/recipes/" + savedRecipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(recipeJson)
         ).andExpect(MockMvcResultMatchers.status().isOk());
@@ -236,7 +234,7 @@ public class RecipeControllerIntegrationTests {
         String recipeJson = objectMapper.writeValueAsString(newRecipe);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.patch("/recipes/" + savedRecipe.getId())
+                MockMvcRequestBuilders.patch("/api/recipes/" + savedRecipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(recipeJson)
         ).andExpect(
@@ -257,7 +255,7 @@ public class RecipeControllerIntegrationTests {
     @Test
     public void testThatDeleteRecipeReturnsHttpStatus204ForNonExistingRecipe() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/recipes/9999")
+                MockMvcRequestBuilders.delete("/api/recipes/9999")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNoContent());
     }
@@ -268,7 +266,7 @@ public class RecipeControllerIntegrationTests {
         RecipeEntity savedRecipe = recipeService.save(recipe);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.delete("/recipes/" + savedRecipe.getId())
+                MockMvcRequestBuilders.delete("/api/recipes/" + savedRecipe.getId())
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(MockMvcResultMatchers.status().isNoContent());
     }
