@@ -7,6 +7,7 @@ import com.pham.freshguard.repositories.RecipeRepository;
 import com.pham.freshguard.services.RecipeService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -80,7 +81,18 @@ public class RecipeServiceImpl implements RecipeService {
         ItemEntity item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
+        if (recipe.getIngredients() == null) {
+            recipe.setIngredients(new HashSet<ItemEntity>());
+        }
+        if (item.getRecipes() == null) {
+            item.setRecipes(new HashSet<>());
+        }
+
         recipe.getIngredients().add(item);
+        item.getRecipes().add(recipe);
+
+        itemRepository.save(item);
+
         return recipeRepository.save(recipe);
     }
 
@@ -89,7 +101,11 @@ public class RecipeServiceImpl implements RecipeService {
         RecipeEntity recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RuntimeException("Recipe not found"));
 
+        ItemEntity item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("Item not found"));
+
         recipe.getIngredients().removeIf(item -> item.getId().equals(itemId));
+        item.getRecipes().removeIf(recipe -> recipe.getId().equals(recipeId));
         return recipeRepository.save(recipe);
     }
 
@@ -115,7 +131,24 @@ public class RecipeServiceImpl implements RecipeService {
                         .orElseThrow(() -> new RuntimeException("Item not found: " + itemId)))
                 .collect(Collectors.toSet());
 
+        if (recipe.getIngredients() != null) {
+            for (ItemEntity currentIngredient : recipe.getIngredients()) {
+                if (currentIngredient.getRecipes() != null) {
+                    currentIngredient.getRecipes().remove(recipe);
+                }
+            }
+        }
+
+        // Set new ingredients on recipe
         recipe.setIngredients(newIngredients);
+
+        // Add this recipe to all new ingredients
+        for (ItemEntity newIngredient : newIngredients) {
+            if (newIngredient.getRecipes() == null) {
+                newIngredient.setRecipes(new HashSet<>());
+            }
+            newIngredient.getRecipes().add(recipe);
+        }
         return recipeRepository.save(recipe);
     }
 
