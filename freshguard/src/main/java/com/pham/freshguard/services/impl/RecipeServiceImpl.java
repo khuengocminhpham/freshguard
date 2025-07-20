@@ -104,8 +104,8 @@ public class RecipeServiceImpl implements RecipeService {
         ItemEntity item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new RuntimeException("Item not found"));
 
-        recipe.getIngredients().removeIf(item -> item.getId().equals(itemId));
-        item.getRecipes().removeIf(recipe -> recipe.getId().equals(recipeId));
+        recipe.getIngredients().removeIf(i -> i.getId().equals(itemId));
+        item.getRecipes().removeIf(r -> r.getId().equals(recipeId));
         return recipeRepository.save(recipe);
     }
 

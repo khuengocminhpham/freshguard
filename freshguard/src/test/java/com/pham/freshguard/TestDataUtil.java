@@ -43,8 +43,8 @@ public class TestDataUtil {
         return ItemEntity.builder()
                 .name("Milk")
                 .category("Diary")
-                .expirationDate(LocalDate.now().plusDays(6))
-                .purchaseDate(LocalDate.now())
+                .expirationDate(LocalDate.of(2025, 7, 16).plusDays(7))
+                .purchaseDate(LocalDate.of(2025, 7, 16))
                 .quantity(1)
                 .location("Fridge")
                 .build();
