@@ -3,20 +3,26 @@ import type { AxiosResponse } from "axios";
 
 const API_BASE_URL = "http://localhost:8080/api";
 
-// Define interfaces for your data models
 export interface Item {
   id?: number;
   name?: string;
-  description?: string;
-  // Add other item properties as needed
+  category?: string;
+  expirationDate: number[];
+  purchaseDate: number[];
+  quantity: number;
+  location: string;
+  recipes?: Recipe[];
 }
 
 export interface Recipe {
   id?: number;
   name?: string;
   description?: string;
+  instructions: string;
+  servings: number;
+  prepTimeMinutes: number;
+  createdAt: number[];
   ingredients?: Item[];
-  // Add other recipe properties as needed
 }
 
 const api = axios.create({
@@ -78,7 +84,7 @@ export const recipeAPI = {
   ): Promise<AxiosResponse<Recipe>> =>
     api.put(`/recipes/${recipeId}/ingredients`, itemIds),
   findByIngredients: (itemIds: number[]): Promise<AxiosResponse<Recipe[]>> =>
-    api.get("/recipes/find-by-ingredients", { params: { itemIds } }),
+    api.get("/recipes/find-by-ingredients", { data: itemIds }),
 };
 
 export default api;
