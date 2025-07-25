@@ -3,25 +3,15 @@ import "./App.css";
 import { ItemCard } from "./components/ItemCard";
 import { RecipeCard } from "./components/RecipeCard";
 import { itemAPI, type Item } from "./services/api";
+import { useItems } from "./context/ItemsContext";
 
 function App() {
-  const [items, setItems] = useState<Item[]>();
-  const [loading, setLoading] = useState<boolean>(true);
-
+  const { items, getItems } = useItems();
   useEffect(() => {
-    fetchItems();
+    getItems();
   }, []);
 
-  async function fetchItems() {
-    try {
-      const response = await itemAPI.getItems();
-      setItems(response.data);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
+  console.log(items);
 
   return (
     <>
@@ -34,9 +24,6 @@ function App() {
           <RecipeCard />
         </div>
       </div>
-      {items?.map((item) => (
-        <div key={item.id}>{item.name}</div>
-      ))}
     </>
   );
 }
