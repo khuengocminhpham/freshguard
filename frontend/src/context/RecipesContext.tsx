@@ -45,7 +45,7 @@ export function RecipesProvider({ children }: RecipesProviderProps) {
     setError(null);
     try {
       const response = await recipeAPI.getRecipes();
-      setRecipes(response.data || []);
+      setRecipes(response.data.reverse() || []);
       return response.data || [];
     } catch (err: any) {
       const errorMessage =
@@ -64,7 +64,7 @@ export function RecipesProvider({ children }: RecipesProviderProps) {
     try {
       const response = await recipeAPI.createRecipe(recipe);
       const newRecipe = response.data;
-      setRecipes((prev) => [...prev, newRecipe]);
+      setRecipes((prev) => [newRecipe, ...prev]);
       return newRecipe;
     } catch (err: any) {
       const errorMessage =

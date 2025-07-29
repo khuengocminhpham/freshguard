@@ -30,7 +30,7 @@ export function ItemsProvider({ children }: any) {
     setError(null);
     try {
       const response = await itemAPI.getItems();
-      setItems(response.data || []);
+      setItems(response.data.reverse() || []);
       return response.data || [];
     } catch (err: any) {
       const errorMessage =
@@ -49,7 +49,7 @@ export function ItemsProvider({ children }: any) {
     try {
       const response = await itemAPI.createItem(item);
       const newItem = response.data;
-      setItems((prevItems) => [...prevItems, newItem]);
+      setItems((prevItems) => [newItem, ...prevItems]);
       return newItem;
     } catch (err: any) {
       const errorMessage =
