@@ -1,15 +1,19 @@
 import { useState } from "react";
-
-export const ItemCard = () => {
+import type { Item } from "../services/api";
+import { arrayToDate } from "../util/helpers";
+type Props = {
+  data: Item;
+};
+export const ItemCard = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const data = {
-    name: "Salt",
-    category: "Spices",
-    expirationDate: "07/06/2026",
-    purchaseDate: "07/06/2026",
-    quantity: 1,
-    location: "Pantry",
-  };
+  // const data = {
+  //   name: "Salt",
+  //   category: "Spices",
+  //   expirationDate: "07/06/2026",
+  //   purchaseDate: "07/06/2026",
+  //   quantity: 1,
+  //   location: "Pantry",
+  // };
   return (
     <div>
       <a
@@ -38,7 +42,7 @@ export const ItemCard = () => {
             >
               <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
             </svg>
-            Expired by: {data.expirationDate}
+            Expired by: {arrayToDate(data.expirationDate)}
           </span>
           <span className="bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-sm me-2 border border-gray-500">
             <svg
@@ -50,7 +54,7 @@ export const ItemCard = () => {
             >
               <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
             </svg>
-            Purchased on: {data.purchaseDate}
+            Purchased on: {arrayToDate(data.purchaseDate)}
           </span>
         </div>
         <div className="mb-4">
