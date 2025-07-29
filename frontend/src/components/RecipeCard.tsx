@@ -7,33 +7,7 @@ type Props = {
 
 export const RecipeCard = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  // const data = {
-  //   name: "Vietnamese Chicken Pho",
-  //   description:
-  //     "A traditional Vietnamese noodle soup with chicken, herbs, and rice noodles.",
-  //   instructions:
-  //     "1. Boil chicken with ginger and onion.\n2. Simmer with spices for 1 hour.\n3. Strain broth, add rice noodles, sliced chicken, herbs, and serve hot.",
-  //   servings: 2,
-  //   prepTimeMinutes: 15,
-  //   createdAt: new Date().toISOString(), // or LocalDateTime formatted if needed
-  //   ingredients: [
-  //     {
-  //       id: 1,
-  //       name: "Pork",
-  //       quantity: 2,
-  //     },
-  //     {
-  //       id: 2,
-  //       name: "Bread",
-  //       quantity: 2,
-  //     },
-  //     {
-  //       id: 3,
-  //       name: "Onion",
-  //       quantity: 2,
-  //     },
-  //   ],
-  // };
+
   return (
     <div>
       <a
