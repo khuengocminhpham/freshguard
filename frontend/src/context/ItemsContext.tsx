@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { itemAPI, type Item } from "../services/api";
 export type ItemsContextType = {
   items: Item[];
@@ -50,7 +50,7 @@ export function ItemsProvider({ children }: any) {
       const response = await itemAPI.createItem(item);
       const newItem = response.data;
       setItems((prevItems) => [...prevItems, newItem]);
-      return item;
+      return newItem;
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.error?.message || "Error creating item";
