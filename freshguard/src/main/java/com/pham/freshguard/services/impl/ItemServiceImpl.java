@@ -1,10 +1,13 @@
 package com.pham.freshguard.services.impl;
 
 import com.pham.freshguard.domain.entities.ItemEntity;
+import com.pham.freshguard.domain.entities.RecipeEntity;
 import com.pham.freshguard.repositories.ItemRepository;
+import com.pham.freshguard.repositories.RecipeRepository;
 import com.pham.freshguard.services.ItemService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,8 +16,10 @@ import java.util.stream.StreamSupport;
 @Service
 public class ItemServiceImpl implements ItemService {
     private ItemRepository itemRepository;
-    public ItemServiceImpl(ItemRepository itemRepository) {
+    private RecipeRepository recipeRepository;
+    public ItemServiceImpl(ItemRepository itemRepository, RecipeRepository recipeRepository) {
         this.itemRepository = itemRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     @Override
@@ -38,6 +43,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public void delete(Long id){
+        List<Long> itemIds = new ArrayList<>();
+        itemIds.add(id);
+        List<RecipeEntity> recipesUsingItem = recipeRepository.findRecipesContainingIngredients(itemIds);
+
+        for (RecipeEntity recipe : recipesUsingItem) {
+            recipe.getIngredients().removeIf(ingredient -> ingredient.getId().equals(id));
+            recipeRepository.save(recipe);
+        }
         itemRepository.deleteById(id);
     }
 
