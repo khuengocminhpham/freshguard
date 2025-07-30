@@ -1,5 +1,6 @@
 package com.pham.freshguard.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pham.freshguard.domain.entities.RecipeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,10 +19,10 @@ public class ItemDto {
 
     private String name;
     private String category; // "Dairy", "Meat", "Vegetable", etc.
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate expirationDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate purchaseDate;
     private Integer quantity;
-    private String unit; // "pieces", "cups", "lbs"
     private String location; // "Fridge", "Pantry"
-    private String notes;
 }
