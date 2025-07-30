@@ -12,3 +12,21 @@ export const arrayToDate = (dateArray: number[]): string => {
   }
   return new Date().toISOString().split("T")[0];
 };
+export const isoStringToArray = (isoString: string): number[] => {
+  const date = new Date(isoString);
+  return [
+    date.getFullYear(),
+    date.getMonth() + 1,
+    date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds(),
+  ];
+};
+export const arrayToISOString = (dateArray: number[]): string => {
+  const [year, month = 1, day = 1, hours = 0, minutes = 0, seconds = 0] =
+    dateArray;
+
+  const date = new Date(year, month - 1, day, hours, minutes, seconds);
+  return date.toISOString();
+};

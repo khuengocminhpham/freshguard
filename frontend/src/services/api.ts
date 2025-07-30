@@ -7,8 +7,8 @@ export interface Item {
   id?: number;
   name?: string;
   category?: string;
-  expirationDate: number[];
-  purchaseDate: number[];
+  expirationDate: string;
+  purchaseDate: string;
   quantity: number;
   location: string;
   recipes?: Recipe[];
@@ -21,7 +21,7 @@ export interface Recipe {
   instructions: string;
   servings: number;
   prepTimeMinutes: number;
-  createdAt: number[];
+  createdAt: string;
   ingredients?: Item[];
 }
 

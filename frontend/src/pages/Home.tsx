@@ -38,7 +38,7 @@ function Home() {
             Recipes
           </Link>
           {recipes.map((recipe) => (
-            <RecipeCard key={recipe.id} data={recipe} />
+            <RecipeCard key={recipe.id} data={recipe} itemView={false} />
           ))}
         </div>
       </div>
