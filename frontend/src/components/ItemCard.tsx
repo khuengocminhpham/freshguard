@@ -1,14 +1,15 @@
 import { useState } from "react";
 import type { Item } from "../services/api";
-import { arrayToDate } from "../util/helpers";
 import { ItemForm } from "./ItemForm";
 import { useItems } from "../context/ItemsContext";
+import { RecipePopUp } from "./RecipePopUp";
 type Props = {
   data: Item;
 };
 export const ItemCard = ({ data }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openRecipes, setOpenRecipes] = useState(false);
   const { deleteItem, loading } = useItems();
 
   const handleDelete = async () => {
@@ -30,10 +31,7 @@ export const ItemCard = ({ data }: Props) => {
   };
   return (
     <div>
-      <a
-        href="#"
-        className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 block"
-      >
+      <div className="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 block">
         <div className="flex flex-row justify-between">
           <div className="mb-2">
             <h5 className="text-2xl font-bold tracking-tight text-primary-700">
@@ -41,7 +39,11 @@ export const ItemCard = ({ data }: Props) => {
             </h5>
             <p className="font-normal text-gray-400">{data.category}</p>
           </div>
-          <button className="block self-start mt-2 items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg ">
+          <button
+            onClick={() => setOpenRecipes(true)}
+            type="button"
+            className="block self-start mt-2 items-center px-3 py-2 text-sm font-medium text-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 rounded-lg "
+          >
             View Recipes
           </button>
         </div>
@@ -56,7 +58,7 @@ export const ItemCard = ({ data }: Props) => {
             >
               <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
             </svg>
-            Expired by: {arrayToDate(data.expirationDate)}
+            Expired by: {data.expirationDate}
           </span>
           <span className="bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-sm me-2 border border-gray-500">
             <svg
@@ -68,7 +70,7 @@ export const ItemCard = ({ data }: Props) => {
             >
               <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
             </svg>
-            Purchased on: {arrayToDate(data.purchaseDate)}
+            Purchased on: {data.purchaseDate}
           </span>
         </div>
         <div className="mb-4">
@@ -131,7 +133,15 @@ export const ItemCard = ({ data }: Props) => {
             create={false}
           />
         )}
-      </a>
+
+        {openRecipes && (
+          <RecipePopUp
+            id={data.id}
+            name={data.name}
+            onClose={() => setOpenRecipes(false)}
+          />
+        )}
+      </div>
     </div>
   );
 };
