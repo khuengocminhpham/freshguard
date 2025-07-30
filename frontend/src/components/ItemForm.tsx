@@ -34,10 +34,8 @@ export const ItemForm = ({
       setFormData({
         name: item.name || "",
         category: item.category || "",
-        purchaseDate: item.purchaseDate ? arrayToDate(item.purchaseDate) : "",
-        expirationDate: item.expirationDate
-          ? arrayToDate(item.expirationDate)
-          : "",
+        purchaseDate: item.purchaseDate || "",
+        expirationDate: item.expirationDate || "",
         quantity: item.quantity || 0,
         location: item.location || "",
       });
@@ -69,21 +67,16 @@ export const ItemForm = ({
     setIsSubmitting(true);
 
     try {
-      // Convert date strings to number arrays
       const itemData: Omit<Item, "id"> = {
         name: formData.name,
         category: formData.category,
-        purchaseDate: formData.purchaseDate
-          ? dateToArray(new Date(formData.purchaseDate))
-          : [],
-        expirationDate: formData.expirationDate
-          ? dateToArray(new Date(formData.expirationDate))
-          : [],
+        purchaseDate: formData.purchaseDate,
+        expirationDate: formData.expirationDate,
         quantity: formData.quantity,
         location: formData.location,
       };
 
-      console.log("itemData:" + itemData);
+      console.log(itemData);
 
       if (create) {
         await createItem(itemData);

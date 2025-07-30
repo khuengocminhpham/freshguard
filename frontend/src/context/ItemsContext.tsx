@@ -145,11 +145,15 @@ export function ItemsProvider({ children }: any) {
         items.map((item) => (item.id === id ? { ...item, recipes } : item))
       );
       setSelectedItem((prevItem) => {
-        if (!prevItem || prevItem.id !== id) return prevItem;
-        return {
-          ...prevItem,
-          recipes,
-        };
+        if (prevItem && prevItem.id === id) {
+          return { ...prevItem, recipes };
+        }
+
+        const itemFromArray = items.find((item) => item.id === id);
+        if (itemFromArray) {
+          return { ...itemFromArray, recipes };
+        }
+        return prevItem;
       });
     } catch (err: any) {
       const errorMessage =
