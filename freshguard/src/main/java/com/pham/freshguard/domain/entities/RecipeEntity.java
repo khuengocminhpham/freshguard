@@ -20,7 +20,11 @@ public class RecipeEntity {
     private Long id;
 
     private String name;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String instructions;
     private Integer servings;
     private Integer prepTimeMinutes;
