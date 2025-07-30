@@ -69,7 +69,6 @@ public class RecipeControllerIntegrationTests {
     public void testThatCreateRecipeSuccessfullyReturnsSavedRecipe() throws Exception {
         RecipeEntity recipeEntity = TestDataUtil.createTestRecipeEntityA();
         String recipeJson = objectMapper.writeValueAsString(recipeEntity);
-
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/recipes")
                         .contentType(MediaType.APPLICATION_JSON)

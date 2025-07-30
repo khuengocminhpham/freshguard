@@ -307,6 +307,7 @@ public class ItemControllerIntegrationTests {
         ItemEntity savedItem = itemService.save(item);
         RecipeEntity recipe = TestDataUtil.createTestRecipeEntityA();
         RecipeEntity savedRecipe = recipeService.save(recipe);
+        recipeService.addIngredientToRecipe(savedRecipe.getId(), savedItem.getId());
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/api/items/" + savedItem.getId() + "/recipes")
