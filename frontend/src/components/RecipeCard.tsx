@@ -44,7 +44,7 @@ export const RecipeCard = ({ data, itemView }: Props) => {
         </div>
 
         <div className="mb-4">
-          <span className="mr-4 bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-blue-400 border border-blue-400">
+          <span className="mr-4 bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded-sm border border-blue-400">
             <svg
               className="w-3 h-3 me-1.5"
               aria-hidden="true"

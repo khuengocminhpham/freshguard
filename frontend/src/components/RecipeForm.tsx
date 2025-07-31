@@ -66,10 +66,10 @@ export const RecipeForm = ({
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "number" ? parseInt(value) || 0 : value,
+      [name]: value,
     }));
   };
 
@@ -217,6 +217,7 @@ export const RecipeForm = ({
                   type="number"
                   name="servings"
                   id="servings"
+                  min="0"
                   value={formData.servings}
                   onChange={handleInputChange}
                   required
@@ -235,6 +236,7 @@ export const RecipeForm = ({
                   type="number"
                   name="prepTimeMinutes"
                   id="prepTimeMinutes"
+                  min="0"
                   value={formData.prepTimeMinutes}
                   onChange={handleInputChange}
                   required
