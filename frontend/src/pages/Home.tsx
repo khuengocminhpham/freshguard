@@ -13,12 +13,13 @@ function Home() {
     getItems();
   }, []);
 
+
   return (
     <div className="p-20">
       <h1 className="mb-20 text-4xl font-extrabold tracking-tight leading-none text-primary-900 md:text-5xl lg:text-6xl">
         Fresh Guard!
       </h1>
-      <div className="flex flex-row justify-between gap-64">
+      <div className="flex flex-row justify-between gap-32">
         <div className="flex flex-col gap-12">
           <Link
             to="/item"
@@ -26,9 +27,10 @@ function Home() {
           >
             Ingredients
           </Link>
-          {items.map((item) => (
+          {items && items.map((item) => (
             <ItemCard key={item.id} data={item} />
           ))}
+          {items.length == 0 && <div>No item found</div>}
         </div>
         <div className="flex flex-col gap-12">
           <Link
@@ -40,6 +42,7 @@ function Home() {
           {recipes.map((recipe) => (
             <RecipeCard key={recipe.id} data={recipe} itemView={false} />
           ))}
+          {recipes.length == 0 && <div>No recipe found</div>}
         </div>
       </div>
     </div>
