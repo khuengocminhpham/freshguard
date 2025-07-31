@@ -74,10 +74,10 @@ export const ItemCard = ({ data }: Props) => {
           </span>
         </div>
         <div className="mb-4">
-          <p className="font-normal text-gray-700 dark:text-gray-400">
+          <p className="font-normal text-gray-700">
             Quantity: {data.quantity}
           </p>
-          <p className="font-normal text-gray-700 dark:text-gray-400">
+          <p className="font-normal text-gray-700">
             Location: {data.location}
           </p>
         </div>

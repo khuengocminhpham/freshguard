@@ -90,7 +90,7 @@ export const RecipeCard = ({ data, itemView }: Props) => {
             {data.ingredients.map((item) => (
               <span
                 key={item.id}
-                className="bg-gray-200 text-gray-800 border border-gray-400 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300"
+                className="bg-gray-200 text-gray-800 border border-gray-400 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full"
               >
                 {item.name}
               </span>
