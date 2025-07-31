@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useItems } from "../context/ItemsContext";
 import type { Item } from "../services/api";
-import { arrayToDate, dateToArray } from "../util/helpers";
 
 type EditItemModalProps = {
   item?: Item;
