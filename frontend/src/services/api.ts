@@ -5,8 +5,8 @@ const API_BASE_URL = "http://localhost:8080/api";
 
 export interface Item {
   id?: number;
-  name?: string;
-  category?: string;
+  name: string;
+  category: string;
   expirationDate: string;
   purchaseDate: string;
   quantity: number;
