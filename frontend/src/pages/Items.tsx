@@ -3,7 +3,7 @@ import { ItemCard } from "../components/ItemCard";
 import { useItems } from "../context/ItemsContext";
 import { ItemForm } from "../components/ItemForm";
 
-export const Item = () => {
+export const Items = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { items, getItems } = useItems();
 
